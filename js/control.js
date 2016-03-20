@@ -38,25 +38,23 @@ control = {
 
 		var story = null;
 
-		if (true) {
-			// setup the object
-			var story = {
-				'headline': message,
-				'trailText': message,
-				'sectionName': message,
-				'apiUrl': message,
-				'webUrl': message,
-				'thumbnail': control.defaultimg,
-				'imageLoaded': false,
-				'broadcast': false
-			};
+		// setup the object
+		var story = {
+			'headline': message.payloadString,
+			'trailText': "",
+			'sectionName': "",
+			'apiUrl': message.payloadString,
+			'webUrl': message.payloadString,
+			'thumbnail': control.defaultimg,
+			'imageLoaded': false,
+			'broadcast': false
+		};
 
-			//  mark that we now have it and push it onto the radio queue
-			//control.alreadyHave[thisStory.apiUrl] = true;
-			//control.alreadyHaveList.push(thisStory.apiUrl);
-			//control.radioQueue.push(newStory);
-			control.radioQueue.push(story);
-		}
+		//  mark that we now have it and push it onto the radio queue
+		//control.alreadyHave[thisStory.apiUrl] = true;
+		//control.alreadyHaveList.push(thisStory.apiUrl);
+		//control.radioQueue.push(newStory);
+		control.radioQueue.push(story);
 
 		//  check the boradcast queue to see if there's anything we need to do
 		//  i.e. yes there's something we need to do as we probably just pushed
