@@ -1,3 +1,5 @@
+
+
 control = {
 
   alreadyHave: {},
@@ -7,6 +9,7 @@ control = {
   pageSize: 10,
   windowResize: null,
   noNewHeadlinesCount: 0,
+  broker: {},
   
   init: function() {
 
@@ -15,6 +18,71 @@ control = {
     
     //  Start up the radio part
     radio.init();
+
+	control.defaultimg = new Image();
+	control.defaultimg.src = 'default.jpg';
+
+	control.broker.wsbroker = "127.0.0.1";  //mqtt websocket enabled broker on localhost
+	control.broker.wsport = 8080 
+
+	control.broker.client = new Paho.MQTT.Client(control.broker.wsbroker, 
+		control.broker.wsport,
+		"myclientid_" + parseInt(Math.random() * 100, 10));
+
+	control.broker.client.onConnectionLost = function (responseObject) {
+		console.log("connection lost: " + responseObject.errorMessage);
+	};
+
+	control.broker.client.onMessageArrived = function (message) {
+		console.log(message.destinationName, ' -- ', message.payloadString);
+
+		var story = null;
+
+		if (true) {
+			// setup the object
+			var story = {
+				'headline': message,
+				'trailText': message,
+				'sectionName': message,
+				'apiUrl': message,
+				'webUrl': message,
+				'thumbnail': control.defaultimg,
+				'imageLoaded': false,
+				'broadcast': false
+			};
+
+			//  mark that we now have it and push it onto the radio queue
+			//control.alreadyHave[thisStory.apiUrl] = true;
+			//control.alreadyHaveList.push(thisStory.apiUrl);
+			//control.radioQueue.push(newStory);
+			control.radioQueue.push(story);
+		}
+
+		//  check the boradcast queue to see if there's anything we need to do
+		//  i.e. yes there's something we need to do as we probably just pushed
+		//  something onto the queue
+		control.checkBroadcast();
+	};
+
+	control.broker.options = {
+		timeout: 3,
+		onSuccess: function () {
+			console.log("mqtt connected");
+			// Connection succeeded; subscribe to our topic, you can add multile lines of these
+			control.broker.client.subscribe('/World', {qos: 1});
+
+			//use the below if you want to publish to a topic on connect
+			message = new Paho.MQTT.Message("Hello");
+			message.destinationName = "/World";
+			control.broker.client.send(message);
+
+		},
+		onFailure: function (message) {
+			console.log("Connection failed: " + message.errorMessage);
+		}
+	};
+
+	control.broker.client.connect(control.broker.options);
 
     //  Whenever the use resized the window we need to redraw the canvas because we
     //  can't just simply set it at 100% and be done with it. *But* don't do it
@@ -34,6 +102,7 @@ control = {
     //  Go get the lates headline from the Guardian
     control.getLatestHeadline();
 
+	// TODO This should go, we can be event driven
     //  and do it once a minute from now on
     setInterval(function() {control.getLatestHeadline();}, 60000);
 
@@ -44,7 +113,7 @@ control = {
 
   getLatestHeadline: function() {
 
-
+/*
     //  Go and get the latest headline...
     //  The first time we do this we're going to grab 10 or so pages because we don't
     //  know if the very latest story will have a thumbnail and we definitly want one
@@ -102,8 +171,8 @@ control = {
       }
     );
 
+*/
   },
-
   //  And now we're going to look at the broadcast queue to see if there's any stories in there
   //  that we may need to process. We do this because it may take a while to get through the
   //  text-to-speach for a long headline and trail text and we don't want to start the next
@@ -209,5 +278,5 @@ utils = {
       //  Ignore
     }
   }
-
 }
+
