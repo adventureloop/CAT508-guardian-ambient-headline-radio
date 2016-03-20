@@ -56,7 +56,9 @@ aesthetic = {
     //  add the load event, so when the BASE64 comes back from the server
     //  the next function will kick in.
     $('img#holder').load(function() {aesthetic.copyToCanvas();});
+    $('img#holder').attr('src', 'default.jpg');
 
+/*
     //  Do the fetch the image from the remote server as BASE64 dance.
     //  the remote server is set up to prepend the Guardian URL onto the
     //  thumbnail value so it can't just be used to load in images from
@@ -70,7 +72,7 @@ aesthetic = {
         $('img#holder').attr('src', json.data);
       }
     );
-
+*/
   },
 
 
