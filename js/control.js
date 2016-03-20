@@ -1,4 +1,5 @@
 var TOPIC='/CAT508'
+var BYLINEMSG='CAT508: Ambient music player and mqtt headline reader'
 
 control = {
 
@@ -70,8 +71,8 @@ control = {
 			control.broker.client.subscribe(TOPIC, {qos: 1});
 
 			//use the below if you want to publish to a topic on connect
-			message = new Paho.MQTT.Message("Hello");
-			message.destinationName = "/World";
+			message = new Paho.MQTT.Message(BYLINEMSG);
+			message.destinationName = TOPIC;
 			control.broker.client.send(message);
 
 		},
